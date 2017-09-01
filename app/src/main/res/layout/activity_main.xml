@@ -4,36 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.photo.photoapp.MainActivity">
+    tools:context="com.photo.photoapp.MainActivity"
+    android:background="#dd3c71">
+
+    <ImageView android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"
+    />
 
     <TextView android:id="@+id/txtHowTo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tire uma self no seu melhor estilo!"
+        android:text="Arrasa na selfie e me manda!"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
         android:textSize="20dp"
         android:layout_marginTop="30dp"
+        android:layout_below="@id/imgLogo"
     />
 
-    <Button android:id="@+id/btnTakePhoto"
+    <TextView android:id="@+id/txtHowTo2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fotografar"
-        android:layout_below="@id/txtHowTo"
+        android:text="Eu te recomendo uma make."
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
         android:textSize="20dp"
-        android:layout_marginTop="30dp"
-        android:onClick="take"
-    />
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/txtHowTo"
+        />
 
     <Button android:id="@+id/btnSelectPhoto"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selecionar"
-        android:layout_below="@id/btnTakePhoto"
-        android:textSize="20dp"
+        android:text="Selecionar do Album"
+        android:textSize="14dp"
         android:layout_marginTop="30dp"
         android:onClick="select"
-    />
+        android:layout_below="@+id/txtHowTo2"
+        android:layout_alignStart="@+id/imgLogo" />
+
+    <Button android:id="@+id/btnTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tirar Selfie"
+        android:textSize="14dp"
+        android:onClick="take"
+        android:layout_alignBottom="@+id/btnSelectPhoto"
+        android:layout_alignEnd="@+id/imgLogo" />
 
 </RelativeLayout>

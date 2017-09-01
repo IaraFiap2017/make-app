@@ -88,7 +88,7 @@ public class ImageUtil {
 
         if (cursor != null) {
             if (cursor.getCount() == 1) {
-                //cursor.moveToFirst();
+                cursor.moveToFirst();
                 angle = cursor.getInt(0);
             }
             cursor.close();

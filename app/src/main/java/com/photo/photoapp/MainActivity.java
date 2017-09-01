@@ -10,6 +10,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity  {
 
     // absolute path on DCIM/Camera
     private String mCurrentPhotoPath;
+
+    // uri saved when file is created
     private Uri mCurrentPhotoUri;
 
     // Microsoft Cognitive Services Faces API
@@ -48,12 +51,10 @@ public class MainActivity extends AppCompatActivity  {
             bundle.putString("key", SUBSCRIPTION_KEY);
             bundle.putString("uri", URI_BASE);
 
-
             if (requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM) {
                 mCurrentPhotoPath = AbsolutePathUtil.getRealPathFromURI_API19(this, data.getData());
                 bundle.putInt("angle", 0);
             }
-
 
             if (requestCode == REQUEST_TAKE_PHOTO) {
                 // adding the adjust rotation angle from taked photo on the bundle
@@ -74,21 +75,11 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     private void grantPermissions() {
-        /*
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.INTERNET},
-                    1
-            );
-        }
-        */
         ActivityCompat.requestPermissions(
                 this,
                 new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.INTERNET},
                 1
         );
-
     }
 
     private File createImageFile() throws IOException {
@@ -107,6 +98,9 @@ public class MainActivity extends AppCompatActivity  {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
+
+        // uri to use with ACTION_VIEW intents
+        mCurrentPhotoUri = Uri.fromFile(image);
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
@@ -127,13 +121,25 @@ public class MainActivity extends AppCompatActivity  {
             if (photoFile != null) {
 
                 // way to work the uri on 24+ api, using FileProvider with xml config on manifest
+                /*
                 mCurrentPhotoUri = FileProvider.getUriForFile(
                         this,
                         BuildConfig.APPLICATION_ID + ".provider",
                         photoFile
                 );
+                */
 
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoUri);
+                takePictureIntent.putExtra(
+                        MediaStore.EXTRA_OUTPUT,
+
+                        // way to work the uri on 24+ api, using FileProvider with xml config on manifest
+                        FileProvider.getUriForFile(
+                            this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile
+                        )
+                );
+
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
@@ -142,9 +148,8 @@ public class MainActivity extends AppCompatActivity  {
     private void executeImageSelectIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        if (intent.resolveActivity(getPackageManager()) != null) {
+        if (intent.resolveActivity(getPackageManager()) != null)
             startActivityForResult(intent, REQUEST_SELECT_IMAGE_IN_ALBUM);
-        }
     }
 
     public void take(View view) {

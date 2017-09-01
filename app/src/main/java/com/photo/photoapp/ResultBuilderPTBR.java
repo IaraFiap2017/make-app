@@ -27,7 +27,7 @@ public class ResultBuilderPTBR {
     }
 
     public ResultBuilderPTBR addBadPhotoMsg() {
-        sb.append("Ops, essa foto ficou ruim bebê. Me manda outra?");
+        sb.append("Ops, essa foto ficou ruim bebê. Me manda outra? Tenta tirar na vertical que fica melhor!");
         return this;
     }
 
