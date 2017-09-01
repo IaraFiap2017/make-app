@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.photo.photoapp.MainActivity">
+
+    <TextView android:id="@+id/txtHowTo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tire uma self no seu melhor estilo!"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+    />
+
+    <Button android:id="@+id/btnTakePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fotografar"
+        android:layout_below="@id/txtHowTo"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+        android:onClick="take"
+    />
+
+    <Button android:id="@+id/btnSelectPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecionar"
+        android:layout_below="@id/btnTakePhoto"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+        android:onClick="select"
+    />
+
+</RelativeLayout>
