@@ -13,7 +13,6 @@
         android:label="Make App"
         android:roundIcon="@mipmap/make_round"
         android:supportsRtl="true"
-        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>

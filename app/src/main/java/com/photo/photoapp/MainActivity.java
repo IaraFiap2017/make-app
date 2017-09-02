@@ -24,10 +24,10 @@ public class MainActivity extends AppCompatActivity  {
     private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 2;
 
     // absolute path on DCIM/Camera
-    private String mCurrentPhotoPath;
+    private static String mCurrentPhotoPath;
 
     // uri saved when file is created
-    private Uri mCurrentPhotoUri;
+    private static Uri mCurrentPhotoUri;
 
     // Microsoft Cognitive Services Faces API
     private static final String SUBSCRIPTION_KEY = "760d5f1601e84cd495570647f492f1af";

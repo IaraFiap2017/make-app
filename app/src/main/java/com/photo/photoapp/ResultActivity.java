@@ -1,9 +1,11 @@
 package com.photo.photoapp;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +21,10 @@ import java.io.IOException;
 public class ResultActivity extends AppCompatActivity {
 
     // Activity View Instances
+    /*
     private ImageView imgPreview;
     private TextView txtResult;
+    */
 
     // Angle to rotate bitmap before sending
     private int angle;
@@ -30,26 +34,40 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        initInstances();
+        //initInstances();
 
         angle = getIntent().getExtras().getInt("angle");
 
-        new ResultActivity.AsyncRequestService().execute(
+        new ResultActivity.AsyncRequestService(this).execute(
                 getIntent().getExtras().getString("uri"),
                 getIntent().getExtras().getString("key"),
                 getIntent().getExtras().getString("mCurrentPhotoPath")
         );
     }
 
+    /*
     private void initInstances() {
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         txtResult = (TextView) findViewById(R.id.txtResponse);
     }
+    */
 
     private class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
 
+        // we are on a separate thread, so we need the Activity and it's instances here
+        private Activity activity;
+        //private ImageView imgPreview;
+        private TextView txtResult;
+
+        private Bitmap preparedBitmap;
+
         // Microsoft Oxford Cognitive Services Faces API
         private FaceServiceRestClient faceService;
+
+        public AsyncRequestService(Activity activity) {
+            this.activity = activity;
+            initInstances();
+        }
 
         @Override
         protected Face[] doInBackground(String... params) {
@@ -57,9 +75,10 @@ public class ResultActivity extends AppCompatActivity {
             faceService = new FaceServiceRestClient(params[0], params[1]);
 
             try {
-                return invokeOxfordAPIRequest(
-                        createInputStream(params[2])
-                );
+                preparedBitmap = loadAndRotateBitmap(params[2]);
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                preparedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                return invokeOxfordAPIRequest(new ByteArrayInputStream(output.toByteArray()));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -73,6 +92,9 @@ public class ResultActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Face[] result) {
+            ImageView imgPreview = (ImageView) findViewById(R.id.imgPreview);
+            imgPreview.setImageBitmap(preparedBitmap);
+
             if(result != null) {
                 if(result.length > 1)
                     txtResult.setText(new ResultBuilderPTBR().addOnlyOneMsg().build());
@@ -92,24 +114,16 @@ public class ResultActivity extends AppCompatActivity {
             }
         }
 
-        private ByteArrayInputStream createInputStream(String mCurrentPhotoPath) {
-            ByteArrayInputStream inputStream = null;
+        private void initInstances() {
+            //imgPreview = activity.findViewById(R.id.imgPreview);
+            txtResult = activity.findViewById(R.id.txtResponse);
+        }
 
-            try {
-                Bitmap bitmap = ImageUtil.loadSizeLimitedBitmap(mCurrentPhotoPath);
-                Bitmap rotateBitmap = ImageUtil.rotateBitmap(bitmap, angle);
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                rotateBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-                inputStream = new ByteArrayInputStream(output.toByteArray());
-
-                // set selected photo on activity view
-                imgPreview.setImageBitmap(rotateBitmap);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return inputStream;
+        private Bitmap loadAndRotateBitmap(String mCurrentPhotoPath) throws IOException {
+            return ImageUtil.rotateBitmap(
+                    ImageUtil.loadSizeLimitedBitmap(mCurrentPhotoPath),
+                    angle
+            );
         }
 
 

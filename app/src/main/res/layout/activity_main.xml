@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.photo.photoapp.MainActivity"
-    android:background="#dd3c71">
+    android:background="#dd3c71"
+    android:orientation="vertical">
 
     <ImageView android:id="@+id/imgLogo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="230dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/logo"
     />
@@ -41,10 +42,10 @@
         android:layout_height="wrap_content"
         android:text="Selecionar do Album"
         android:textSize="14dp"
-        android:layout_marginTop="30dp"
         android:onClick="select"
-        android:layout_below="@+id/txtHowTo2"
-        android:layout_alignStart="@+id/imgLogo" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/imgLogo"
+        android:layout_marginBottom="14dp" />
 
     <Button android:id="@+id/btnTakePhoto"
         android:layout_width="wrap_content"
