@@ -21,12 +21,22 @@ public class ResultBuilderPTBR {
         sb = new StringBuilder();
     }
 
-    public ResultBuilderPTBR addOnlyOneMsg() {
+    public ResultBuilderPTBR addCameraPermisisonError() {
+        sb.append("Você precisa me autorizar para acessar sua câmera ");
+        return this;
+    }
+
+    public ResultBuilderPTBR addErrorOnePersonAlowed() {
         sb.append("Bebê, só pode uma pessoa na foto...");
         return this;
     }
 
-    public ResultBuilderPTBR addBadPhotoMsg() {
+    public ResultBuilderPTBR addIOError() {
+        sb.append("Ops deu erro! Pode mandar a foto denovo?");
+        return this;
+    }
+
+    public ResultBuilderPTBR addErrorBadPhoto() {
         sb.append("Ops, essa foto ficou ruim bebê. Me manda outra? Tenta tirar na vertical que fica melhor!");
         return this;
     }

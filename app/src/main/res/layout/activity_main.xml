@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:text="Selecionar do Album"
         android:textSize="14dp"
-        android:onClick="select"
+        android:onClick="selectPicture"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/imgLogo"
         android:layout_marginBottom="14dp" />
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:text="Tirar Selfie"
         android:textSize="14dp"
-        android:onClick="take"
+        android:onClick="takePicture"
         android:layout_alignBottom="@+id/btnSelectPhoto"
         android:layout_alignEnd="@+id/imgLogo" />
 
