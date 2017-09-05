@@ -1,19 +1,13 @@
 package com.photo.photoapp;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -23,14 +17,8 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity  {
 
-
-    //public static final int EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE_BY_GALLERY = 0;
-    //public static final int EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE_BY_CAMERA = 1;
-    //public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
-
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 2;
-    //private static final int REQUEST_CAMERA_RESULT = 11;
 
     // absolute path on DCIM/Camera
     private static String mCurrentPhotoPath;
@@ -38,45 +26,11 @@ public class MainActivity extends AppCompatActivity  {
     // uri saved when file is created
     private static Uri mCurrentPhotoUri;
 
-    private MarshMallowPermission marshMallowPermission;
+    private PermissionManager permissionManager;
 
     // Microsoft Cognitive Services Faces API
     private static final String SUBSCRIPTION_KEY = "760d5f1601e84cd495570647f492f1af";
     private static final String URI_BASE = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
-
-    /*
-    private void grantPermissions() {
-
-
-        // In the case the app is running on Android Marshmallow or newer, it checks for runtime permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            /*
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_TAKE_PHOTO);
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_SELECT_IMAGE_IN_ALBUM);
-
-            }
-
-
-            if(checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_TAKE_PHOTO);
-            }
-
-            /*
-            if(checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.INTERNET}, REQUEST_TAKE_PHOTO);
-            }
-
-            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.INTERNET}, REQUEST_TAKE_PHOTO);
-
-        ActivityCompat.requestPermissions(
-                this,
-                new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.INTERNET},
-                1
-        );
-
-    }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +38,8 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         //grantPermissions();
-        marshMallowPermission = new MarshMallowPermission(MainActivity.this);
-
-
-
-        if (!marshMallowPermission.checkPermissionForExternalStorage()) {
-            marshMallowPermission.requestPermissionForExternalStorage(MarshMallowPermission.EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE_BY_LOAD_PROFILE);
-        }
+        permissionManager = new PermissionManager(MainActivity.this);
+        permissionManager.managePermissions(REQUEST_TAKE_PHOTO);
     }
 
     public void takePicture(View view) {
@@ -118,10 +67,6 @@ public class MainActivity extends AppCompatActivity  {
                             )
                     );
 
-                    //takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    //takePictureIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-                    //takePictureIntent.addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-                    //takePictureIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
@@ -131,35 +76,18 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(requestCode == REQUEST_CAMERA_RESULT && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, new ResultBuilderPTBR().addCameraPermisisonError().build(), Toast.LENGTH_LONG).show();
-            finish();
-        }
-        else
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-    */
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch (requestCode) {
-            case MarshMallowPermission.EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE_BY_LOAD_PROFILE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if(!permissionManager.checkPermissions()) {
+            Toast.makeText(
+                    this,
+                    new ResultBuilderPTBR().addNoPermissionClosesApp().build(),
+                    Toast.LENGTH_SHORT
+            ).show();
 
-                    //permission granted successfully
-
-                } else {
-
-                    //permission denied
-
-                }
-                break;
+            finish();
         }
     }
 
@@ -207,7 +135,7 @@ public class MainActivity extends AppCompatActivity  {
 
             if (requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM) {
                 mCurrentPhotoPath = AbsolutePathUtil.getRealPathFromURI_API19(this, data.getData());
-                bundle.putInt("angle", 0);
+                bundle.putInt("angle", 270);
             }
 
             if (requestCode == REQUEST_TAKE_PHOTO) {

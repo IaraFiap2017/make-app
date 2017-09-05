@@ -46,9 +46,7 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
 
     /* ADITIONAL WORKING PARAMETERS */
         /*
-            FaceServiceClient.FaceAttributeType.Smile,
-            FaceServiceClient.FaceAttributeType.FacialHair,
-            FaceServiceClient.FaceAttributeType.HeadPose,
+
          */
     private Face[] invokeOxfordAPIRequest(ByteArrayInputStream inputStream) throws IOException, ClientException {
         return faceService.detect(
@@ -59,7 +57,9 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
                         FaceServiceClient.FaceAttributeType.Age,
                         FaceServiceClient.FaceAttributeType.Gender,
                         FaceServiceClient.FaceAttributeType.Glasses,
-                        FaceServiceClient.FaceAttributeType.FacialHair
+                        FaceServiceClient.FaceAttributeType.FacialHair,
+                        FaceServiceClient.FaceAttributeType.Smile,
+                        FaceServiceClient.FaceAttributeType.HeadPose
                 }
         );
     }
@@ -84,8 +84,13 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
                                 new ResultBuilderPTBR()
                                         .addAge(result[0].faceAttributes.age)
                                         .addGender(result[0].faceAttributes.gender)
-                                        .addFacialHair(result[0].faceAttributes.facialHair)
+                                        .addFacialHair(
+                                                result[0].faceAttributes.facialHair,
+                                                result[0].faceAttributes.gender
+                                        )
                                         .addGlasses(result[0].faceAttributes.glasses)
+                                        .addSmile(result[0].faceAttributes.smile)
+                                        .addHeadPose(result[0].faceAttributes.headPose)
                                         .build()
                         );
 

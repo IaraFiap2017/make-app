@@ -2,6 +2,7 @@ package com.photo.photoapp;
 
 import com.microsoft.projectoxford.face.contract.FacialHair;
 import com.microsoft.projectoxford.face.contract.Glasses;
+import com.microsoft.projectoxford.face.contract.HeadPose;
 
 public class ResultBuilderPTBR {
 
@@ -21,8 +22,13 @@ public class ResultBuilderPTBR {
         sb = new StringBuilder();
     }
 
-    public ResultBuilderPTBR addCameraPermisisonError() {
-        sb.append("Você precisa me autorizar para acessar sua câmera ");
+    public ResultBuilderPTBR addPermissionMessage() {
+        sb.append("Você precisa me autorizar para acessar sua câmera e gravar dados!");
+        return this;
+    }
+
+    public ResultBuilderPTBR addNoPermissionClosesApp() {
+        sb.append("Desculpe, sem permissão para acessar a câmera e gravar dados, não é possível usar o app");
         return this;
     }
 
@@ -37,13 +43,16 @@ public class ResultBuilderPTBR {
     }
 
     public ResultBuilderPTBR addErrorBadPhoto() {
-        sb.append("Ops, essa foto ficou ruim bebê. Me manda outra? Tenta tirar na vertical que fica melhor!");
+        sb.append("Ops, a foto ficou ruim bebê. Manda outra? Tira bem perto da câmera e na vertical!");
         return this;
     }
 
     public ResultBuilderPTBR addGlasses(Glasses glasses) {
         if(!glasses.name().equals("NoGlasses")) {
-            //TODO
+            if(glasses.toString().equals("ReadingGlasses"))
+                sb.append("Usa óculos \n");
+            else if(glasses.toString().equals("Sunglasses"))
+                sb.append("Está usando óculos de sol");
         }
         return this;
     }
@@ -60,8 +69,11 @@ public class ResultBuilderPTBR {
         return this;
     }
 
-    public ResultBuilderPTBR addFacialHair(FacialHair facialHair) {
-        if(facialHair.beard >= 0.4 && facialHair.moustache >= 0.5 && facialHair.sideburns >= 0.3){
+    public ResultBuilderPTBR addFacialHair(FacialHair facialHair, String gender) {
+        if(gender.equals("male") && facialHair.beard >= 0.4 && facialHair.moustache >= 0.5 && facialHair.sideburns >= 0.3)
+            sb.append("Não tem barba \n");
+
+        else if(facialHair.beard >= 0.4 && facialHair.moustache >= 0.5 && facialHair.sideburns >= 0.3){
             sb.append("Tem barba, bigode e costeleta");
             sb.append("\n");
 
@@ -70,6 +82,25 @@ public class ResultBuilderPTBR {
             sb.append(facialHair.moustache >= 0.5 ? "Tem bigode \n" : "");
             sb.append(facialHair.sideburns >= 0.3 ? "Tem costeleta \n" : "");
         }
+
+        return this;
+    }
+
+    public ResultBuilderPTBR addSmile(Double smile) {
+        if(smile > 0.9) {
+            sb.append("Tem um belo sorriso");
+            sb.append("\n");
+        }
+
+        return this;
+    }
+
+    public ResultBuilderPTBR addHeadPose(HeadPose headPose) {
+        if(headPose.yaw > 10 || headPose.yaw < -10) {
+            sb.append("Rosto de ladinho, hummm...");
+            sb.append("\n");
+        }
+
         return this;
     }
 

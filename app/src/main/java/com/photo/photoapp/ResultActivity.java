@@ -42,8 +42,6 @@ public class ResultActivity extends AppCompatActivity {
         finish();
     }
 
-    //TODO metoo que chama a nova activity de products
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
