@@ -1,4 +1,4 @@
-package com.photo.photoapp;
+package com.photo.photoapp.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import com.photo.photoapp.util.AbsolutePathUtil;
+import com.photo.photoapp.BuildConfig;
+import com.photo.photoapp.util.ImageUtil;
+import com.photo.photoapp.util.PermissionManagerUtil;
+import com.photo.photoapp.R;
+import com.photo.photoapp.builder.ResultBuilderPTBR;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +33,7 @@ public class MainActivity extends AppCompatActivity  {
     // uri saved when file is created
     private static Uri mCurrentPhotoUri;
 
-    private PermissionManager permissionManager;
+    private PermissionManagerUtil permissionManagerUtil;
 
     // Microsoft Cognitive Services Faces API
     private static final String SUBSCRIPTION_KEY = "760d5f1601e84cd495570647f492f1af";
@@ -38,8 +45,8 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         //grantPermissions();
-        permissionManager = new PermissionManager(MainActivity.this);
-        permissionManager.managePermissions(REQUEST_TAKE_PHOTO);
+        permissionManagerUtil = new PermissionManagerUtil(MainActivity.this);
+        permissionManagerUtil.managePermissions(REQUEST_TAKE_PHOTO);
     }
 
     public void takePicture(View view) {
@@ -72,7 +79,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Erro: " + e, Toast.LENGTH_LONG).show(); //TODO tirar isso daqui ... nao tem que acontecer esse erro
         }
     }
 
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity  {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(!permissionManager.checkPermissions()) {
+        if(!permissionManagerUtil.checkPermissions()) {
             Toast.makeText(
                     this,
                     new ResultBuilderPTBR().addNoPermissionClosesApp().build(),
@@ -127,32 +133,58 @@ public class MainActivity extends AppCompatActivity  {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
-            Intent resultActivityIntent = new Intent(this, ResultActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("key", SUBSCRIPTION_KEY);
-            bundle.putString("uri", URI_BASE);
+        if((resultCode == RESULT_OK) && (requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM)) {
+            boolean hasURI = true;
 
             if (requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM) {
-                mCurrentPhotoPath = AbsolutePathUtil.getRealPathFromURI_API19(this, data.getData());
-                bundle.putInt("angle", 270);
+                try{
+                    mCurrentPhotoPath = AbsolutePathUtil.getRealPathFromURI_API19(this, data.getData());
+                    mCurrentPhotoUri = Uri.fromFile(new File(mCurrentPhotoPath));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast
+                        .makeText(this, new ResultBuilderPTBR().addNoIndexImageError().build(), Toast.LENGTH_LONG)
+                        .show();
+                    hasURI = false;
+                }
             }
 
-            if (requestCode == REQUEST_TAKE_PHOTO) {
-                // adding the adjust rotation angle from taked photo on the bundle
+            if (hasURI) {
+
+                // creating the intent for ResultActivity
+                Intent resultActivityIntent = new Intent(this, ResultActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("key", SUBSCRIPTION_KEY);
+                bundle.putString("uri", URI_BASE);
+
+                // adding the adjust rotation angle from photo on the bundle
                 try {
                     bundle.putInt(
                             "angle",
                             ImageUtil.getImageRotationAngle(mCurrentPhotoUri, getContentResolver())
                     );
+
+                    /* Use instead the angle below with an emulator on a webcam */
+                    //bundle.putInt("angle", 90);
+
+                    bundle.putString("mCurrentPhotoPath", mCurrentPhotoPath.toString());
+                    resultActivityIntent.putExtras(bundle);
+                    resetStaticAttributes();
+                    startActivity(resultActivityIntent);
+
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast
+                        .makeText(this, new ResultBuilderPTBR().addIOError().build(), Toast.LENGTH_LONG)
+                        .show();
                 }
             }
 
-            bundle.putString("mCurrentPhotoPath", mCurrentPhotoPath);
-            resultActivityIntent.putExtras(bundle);
-            startActivity(resultActivityIntent);
         }
+    }
+
+    private void resetStaticAttributes() {
+        mCurrentPhotoPath = null;
+        mCurrentPhotoUri = null;
     }
 }

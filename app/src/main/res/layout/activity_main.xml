@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.photo.photoapp.MainActivity"
+    tools:context="com.photo.photoapp.activities.MainActivity"
     android:background="#dd3c71"
     android:orientation="vertical">
 

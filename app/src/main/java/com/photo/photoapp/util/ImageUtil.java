@@ -1,4 +1,4 @@
-package com.photo.photoapp;
+package com.photo.photoapp.util;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

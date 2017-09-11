@@ -1,4 +1,4 @@
-package com.photo.photoapp;
+package com.photo.photoapp.task;
 
 import android.os.AsyncTask;
 
@@ -6,6 +6,8 @@ import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.contract.Face;
 import com.microsoft.projectoxford.face.rest.ClientException;
+import com.photo.photoapp.builder.ResultBuilderPTBR;
+import com.photo.photoapp.activities.ResultActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,10 +46,6 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
         }
     }
 
-    /* ADITIONAL WORKING PARAMETERS */
-        /*
-
-         */
     private Face[] invokeOxfordAPIRequest(ByteArrayInputStream inputStream) throws IOException, ClientException {
         return faceService.detect(
                 inputStream,    // Input stream of image to detect
@@ -82,8 +80,10 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
                         .getTxtResult()
                         .setText(
                                 new ResultBuilderPTBR()
-                                        .addAge(result[0].faceAttributes.age)
-                                        .addGender(result[0].faceAttributes.gender)
+                                        .addAgeAndGender(
+                                                result[0].faceAttributes.age,
+                                                result[0].faceAttributes.gender
+                                        )
                                         .addFacialHair(
                                                 result[0].faceAttributes.facialHair,
                                                 result[0].faceAttributes.gender

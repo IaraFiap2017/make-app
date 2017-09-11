@@ -1,4 +1,4 @@
-package com.photo.photoapp;
+package com.photo.photoapp.activities;
 
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
@@ -6,8 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.microsoft.projectoxford.face.contract.Face;
+import com.photo.photoapp.task.AsyncRequestService;
+import com.photo.photoapp.util.ImageUtil;
+import com.photo.photoapp.util.InternetUtil;
+import com.photo.photoapp.R;
+import com.photo.photoapp.builder.ResultBuilderPTBR;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -61,10 +67,17 @@ public class ResultActivity extends AppCompatActivity {
             outputStream = new ByteArrayOutputStream();
             preparedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-            new AsyncRequestService(this).execute(
-                    getIntent().getExtras().getString("uri"),
-                    getIntent().getExtras().getString("key")
-            );
+            if(InternetUtil.isNetworkAvailable(this)) {
+                new AsyncRequestService(this).execute(
+                        getIntent().getExtras().getString("uri"),
+                        getIntent().getExtras().getString("key")
+                );
+            } else {
+                Toast
+                    .makeText(this, new ResultBuilderPTBR().addNoInternetError().build(), Toast.LENGTH_LONG)
+                    .show();
+                finish();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
