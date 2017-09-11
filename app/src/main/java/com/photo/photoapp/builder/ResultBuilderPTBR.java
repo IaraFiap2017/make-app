@@ -83,14 +83,14 @@ public class ResultBuilderPTBR {
 
     public ResultBuilderPTBR addFacialHair(FacialHair facialHair, String gender) {
         if(gender.equals("male")) {
-            if(facialHair.beard >= 0.3 && facialHair.moustache >= 0.4 && facialHair.sideburns >= 0.2){
+            if(facialHair.beard >= 0.4 && facialHair.moustache >= 0.4 && facialHair.sideburns >= 0.4){
                 sb.append("Tem barba, bigode e costeleta");
                 sb.append("\n");
 
             } else {
-                sb.append(facialHair.beard >= 0.3 ? "Tem barba \n" : "");
+                sb.append(facialHair.beard >= 0.4 ? "Tem barba \n" : "");
                 sb.append(facialHair.moustache >= 0.4 ? "Tem bigode \n" : "");
-                sb.append(facialHair.sideburns >= 0.2 ? "Tem costeleta \n" : "");
+                sb.append(facialHair.sideburns >= 0.4 ? "Tem costeleta \n" : "");
             }
         }
         return this;
