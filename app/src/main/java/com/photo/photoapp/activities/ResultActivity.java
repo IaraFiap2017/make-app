@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class ResultActivity extends AppCompatActivity {
     // Activity View Instances
     private TextView txtResult;
     private ImageView imgPreview;
+    private Button btnMake;
 
     private Bitmap preparedBitmap;
 
@@ -44,6 +46,8 @@ public class ResultActivity extends AppCompatActivity {
         return outputStream;
     }
 
+    public Button getBtnMake() { return btnMake; }
+
     public void returnToMainActivity(View view) {
         finish();
     }
@@ -54,6 +58,8 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         initInstances();
+
+        btnMake.setVisibility(View.INVISIBLE);
 
         try {
             preparedBitmap = loadAndRotateBitmap(
@@ -88,6 +94,7 @@ public class ResultActivity extends AppCompatActivity {
     private void initInstances() {
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         txtResult = (TextView) findViewById(R.id.txtResponse);
+        btnMake = (Button) findViewById(R.id.btnMake);
     }
 
     private Bitmap loadAndRotateBitmap(String mCurrentPhotoPath, int angle) throws IOException {

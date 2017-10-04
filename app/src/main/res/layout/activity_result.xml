@@ -33,7 +33,7 @@
         android:layout_below="@id/imgPreview"
         android:layout_centerHorizontal="true" />
 
-    <Button android:id="@+id/btnMontar"
+    <Button android:id="@+id/btnMake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recomendar make!"
@@ -43,13 +43,13 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="15dp" />
 
-    <Button android:id="@+id/btnRecomendar"
+    <Button android:id="@+id/btnTakeAnother"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="outra foto"
         android:textSize="14dp"
-        android:layout_alignBaseline="@+id/btnMontar"
-        android:layout_alignBottom="@+id/btnMontar"
+        android:layout_alignBaseline="@+id/btnMake"
+        android:layout_alignBottom="@+id/btnMake"
         android:layout_alignStart="@+id/imgLogo"
         android:onClick="returnToMainActivity"/>
 

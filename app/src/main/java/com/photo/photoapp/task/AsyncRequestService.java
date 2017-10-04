@@ -1,6 +1,7 @@
 package com.photo.photoapp.task;
 
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
@@ -94,7 +95,7 @@ public class AsyncRequestService extends AsyncTask<String, Void, Face[]> {
                                         .build()
                         );
 
-                //TODO aparecer btns depois do resultado (chamar da activitie)
+                resultActivity.getBtnMake().setVisibility(View.VISIBLE);
             }
             else
                 resultActivity
