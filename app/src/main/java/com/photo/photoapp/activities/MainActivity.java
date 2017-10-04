@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity  {
     private PermissionManagerUtil permissionManagerUtil;
 
     // Microsoft Cognitive Services Faces API
-    private static final String SUBSCRIPTION_KEY = "6ceb3cc127d446119b9c1527119b721e";
+    private static final String SUBSCRIPTION_KEY = "32676577773e4bdf88be6511d14fd222";
     private static final String URI_BASE = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/";
 
     @Override

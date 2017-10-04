@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.photo.photoapp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.photo.photoapp">
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -34,7 +35,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activities.ResultActivity"></activity>
+        <activity android:name=".activities.ResultActivity" />
+        <activity android:name=".activities.MakeActivity"></activity>
     </application>
 
 </manifest>
